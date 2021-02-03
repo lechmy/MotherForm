@@ -82,6 +82,7 @@ function AjaxForm(config) {
 
   // SETTERS
   // --------------------------------------------------
+
   this.setForm = form => {
     try {
       this.conf.form = typeof form === 'string' ? document.querySelector(form) : form;
@@ -135,7 +136,7 @@ function AjaxForm(config) {
     let dataTotalCount = this.parseDataAtt('data-mf-pgn');
     dataTotalCount = dataTotalCount != null ? parseInt(dataTotalCount['totalCount']) : null;
     this.conf.pagination.totalCount = count || dataTotalCount || this.conf.pagination.totalCount;
-    this.setPageCount();
+    // this.setPageCount();
   }
 
   this.setPageSize = size => {
@@ -145,15 +146,12 @@ function AjaxForm(config) {
   }
 
   this.setPageCount = count => {
-    let pageCount;
-    try {
-      let val = count || dataCount['pageCount'];
-      pageCount = parseInt(val);
-    } catch (e) {
-      pageCount = Math.floor(this.conf.pagination.totalCount / this.conf.pagination.pageSize) || 1;
-    }
+    let dataCount = this.parseDataAtt('data-mf-pgn');
+    let val = count || dataCount['pageCount'];
+    let pageCount = parseInt(val);
+    let calculatedPageCount = Math.floor(this.conf.pagination.totalCount / this.conf.pagination.pageSize) || 1;
     this.activePage = this.activePage > pageCount ? pageCount : this.activePage;
-    this.pageCount = pageCount  || this.conf.pagination.pageCount;
+    this.pageCount = pageCount || calculatedPageCount || this.conf.pagination.pageCount;
   }
 
   this.setPaginationParameters = () => {
@@ -179,8 +177,8 @@ function AjaxForm(config) {
         let response = this.xhttp.response;
         if(this.paginationEnabled) {
           this.setPageSize(this.xhttp.response[this.conf.paginationModel.pageSize]);
-          this.setPageCount(this.xhttp.response[this.conf.paginationModel.pageCount]);
           this.setTotalCount(this.xhttp.response[this.conf.paginationModel.totalCount]);
+          this.setPageCount(this.xhttp.response[this.conf.paginationModel.pageCount]);
 
           if(this.paginationEnabled){
             if(this.conf.pagination.type == paginationTypes.PAGE) {
