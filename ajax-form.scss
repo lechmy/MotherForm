@@ -1,0 +1,135 @@
+.mf-pagination-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  width: 100%;
+  margin-top: 20px;
+
+  @media screen and (max-width: 767px) {
+    justify-content: flex-start;
+    overflow: auto;
+  }
+}
+
+.mf-pgn-btn {
+  display: flex;
+  justify-content: center;
+  min-width: 60px;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  line-height: 1.2;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #add8e6;
+  }
+
+  &:focus {
+    outline: none;
+  }
+
+  &.active {
+    background-color: #5a8c9c;
+  }
+
+  @media screen and (max-width: 767px) {
+    &:first-child {
+      margin-left: auto;
+    }
+    
+    &:last-child {
+      margin-right: auto;
+    }
+  }
+}
+
+.mf-pgn-space {
+  flex: 1;
+}
+
+.mf-pgn-dots {
+  padding: 5px 20px;
+  letter-spacing: 4px;
+}
+
+.mf-pgn-count {
+  align-self: center;
+  margin: 0 20px;
+  font-size: 24px;
+  letter-spacing: 1px;
+}
+
+.mf-loading {
+  $z-index: 3000;
+  $time: 1s;
+
+  position: relative;
+  min-height: 150px;
+
+  &:before {
+    content: " ";
+    display: block;
+    position: absolute;
+    top: calc(50% - 50px);
+    left: calc(50% - 50px);
+    width: 100px;
+    height: 100px;
+    border: 10px solid #959595;
+    border-radius: 50%;
+    z-index: $z-index - 1;
+    // animation: loading $time linear infinite;
+  }
+
+  &::after {
+    content: " ";
+    display: block;
+    position: absolute;
+    top: calc(50% - 50px);
+    left: calc(50% - 50px);
+    width: 100px;
+    height: 100px;
+    border: 10px solid transparent;
+    border-top-color: #363636;
+    border-radius: 50%;
+    animation: loading $time linear infinite;
+    z-index: $z-index;
+    transform-origin: center center;
+  }
+}
+
+.mf-icon-first {
+  &:before{
+    content: "<<"
+  }
+}
+
+.mf-icon-prev {
+  &:before{
+    content: "<"
+  }
+}
+
+.mf-icon-next {
+  &:before{
+    content: ">"
+  }
+}
+
+.mf-icon-last {
+  &:before{
+    content: ">>"
+  }
+}
+
+// keyframes
+//---------------------------------------------
+@keyframes loading {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}

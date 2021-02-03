@@ -1,0 +1,45 @@
+<!-- EXAMPLE 1 -->
+<form action="https://jsonplaceholder.typicode.com/comments?postId"
+  data-mf-init data-mf-container=".mf-response-container" data-mf-query-params="true"
+  data-mf-pgn="{'pageSize': 10, 'totalCount': 88, pageCount: 8}"
+  data-mf-pgn-model="{'response': 'data', 'pageSize': 'pagesize','pageNumber': 'pagenumber', 'totalCount': 'totalCount'}">
+  <div>
+    <label for="postId">Post ID</label>
+    <input id="postId" type="text" name="postId">
+  </div>
+  <br>
+  <button type="submit">Submit</button>
+</form>
+
+
+<!-- EXAMPLE 2 -->
+<form action="https://jsonplaceholder.typicode.com/comments?postId" class="mf-init">
+  <div>
+    <label for="postId">Post ID</label>
+    <input id="postId" type="text" name="postId" data-mf-validate="email">
+  </div>
+
+  <input type="hidden" name="pageSize" value="10">
+  <input type="hidden" name="totalCount" value="x">
+
+  <br>
+  <button type="submit">Submit</button>
+</form>
+
+
+<!-- EXAMPLE 3 -->
+<form action="https://jsonplaceholder.typicode.com/comments?postId" class="mf-init">
+  <div>
+    <label for="postId">Post ID</label>
+    <input id="postId" type="text" name="postId">
+  </div>
+  <br>
+  <button type="submit">Submit</button>
+</form>
+
+<div id="ajaxResponse">
+  <!-- results -->
+</div>
+<div id="ajaxPagination">
+  <!-- pagination -->
+</div>
