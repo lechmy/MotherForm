@@ -253,6 +253,9 @@ function AjaxForm(config) {
         if((item.type == FormTypes.CHECKBOX || item.type == FormTypes.RADIO) && item.checked == false) {
           continue;
         }
+        if(item.type == FormTypes.SUBMIT && item.dataset.selected != "true") {
+          continue;
+        }
         data += item.attributes.name.value + '=' + encodeURIComponent(item.value) + '&';
       }
     }
@@ -495,7 +498,6 @@ function AjaxForm(config) {
     let searchParams = new URLSearchParams(window.location.search);
     for(var pair of searchParams.entries()) {
 
-      console.log(pair[0]+ ', '+ pair[1]);
       switch(pair[0]) {
         case this.conf.paginationModel['pageNumber']:
           this.activePage = pair[1];
@@ -511,29 +513,30 @@ function AjaxForm(config) {
 
         default:
           try {
-            let element = document.querySelector(`[name=${pair[0]}]`)//.value = pair[1];
-            switch(element.type) {
-              case FormTypes.CHECKBOX:
-              case FormTypes.RADIO:
-                element.checked = element.value == pair[1] ? true : false;
-                break;
-
-              case FormTypes.BUTTON:
-                break;
-
-              default:
-                element.value = pair[1];
-                break;
-            }
+            document.querySelectorAll(`[name=${pair[0]}]`).forEach(element => {
+              switch(element.type) {
+                case FormTypes.CHECKBOX:
+                case FormTypes.RADIO:
+                  element.checked = element.value == pair[1] ? true : false;
+                  break;
+  
+                case FormTypes.SUBMIT:
+                  element.value == pair[1] ? element.setAttribute('data-selected', 'true') : null;
+                  break;
+  
+                default:
+                  element.value = pair[1];
+                  break;
+              }
+            });
           } catch (e) {
             return false;
           }
           break;
       }
-
-      if(this.paginationEnabled && this.conf.pagination.type == paginationTypes.PAGE) {
-        this.renderPagination();
-      }
+    }
+    if(this.paginationEnabled && this.conf.pagination.type == paginationTypes.PAGE) {
+      this.renderPagination();
     }
   }
 
@@ -558,6 +561,12 @@ function AjaxForm(config) {
     this.events.forEach(eventName => {
       this.conf.form.addEventListener(eventName, (e) => {
         e.preventDefault();
+        if(eventName === 'submit' && e.submitter.name) {
+          document.querySelectorAll(`[name="${e.submitter.name}"]`).forEach(element => {
+            element.removeAttribute('data-selected');
+          });
+          e.submitter.setAttribute('data-selected', 'true');
+        }
         this.setData();
       });
     });
