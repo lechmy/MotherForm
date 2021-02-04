@@ -48,7 +48,6 @@ function AjaxForm(config) {
     },
     beforesend: () => { },
     response: (res) => {
-      // Check if this condition is valid
       if(this.conf.pagination.type == paginationTypes.LOAD || this.conf.pagination.type == paginationTypes.SCROLL) {
         this.conf.container.insertAdjacentHTML('beforeend', res);
       } else {
@@ -372,7 +371,6 @@ function AjaxForm(config) {
   }
 
   this.renderPagination = () => {
-    // let elements = pattern.match(paginationPatternsRegEx);
     this.conf.pagination.container.innerHTML = '';
     let elements = this.conf.pagination.pattern.split(' ');
 
@@ -523,37 +521,3 @@ function AjaxForm(config) {
 document.querySelectorAll('[data-mf-init]').forEach(form => {
   new AjaxForm({form: form});
 });
-
-// Convert container & response to accept "String" or "Function" in order do add default response function on one place
-
-// Example
-new AjaxForm({
-  form: '.mf-init',
-  container: '.mf-response-container',
-  // additionalData: {
-  //  lng: document.getElementById('language').value,
-  // },
-  queryParams: true,
-  pagination: {
-    // type: 'load-more',
-    type: 'pagination',
-    pattern: '<< < ~ >... [4] ...< ~ > >>',
-    // pattern: '< (x/y) >',
-    container: '.mf-pagination',
-    // pageSize: 10,
-    // totalCount: 90
-    pageCount: 9
-  },
-  paginationModel: { //pagination mapping
-    totalCount: 'Ukupno'
-  },
-  beforesend: () => {
-    // Add code
-  },
-  // response: function (res) {
-  //   console.log(res);
-  // }
-});
-
-//u slucaju da su podaci zavuceni u objekte, splituj po tacki i ispitaj kao sto je napisano dole
-// obj['key']['key2']
