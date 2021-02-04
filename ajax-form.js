@@ -2,11 +2,11 @@ function AjaxForm(config) {
   const messagePrefix = '[MotherForm] | Error:';
 
   const FormTypes = {
+    BUTTON: 'button',
     SUBMIT: 'submit',
     SELECT: 'select-one',
-    TEXT: 'text',
-    SEARCH: 'search',
-    CHECKBOX: 'checkbox'
+    CHECKBOX: 'checkbox',
+    RADIO: 'radio',
   };
 
   const paginationTypes = {
@@ -249,8 +249,11 @@ function AjaxForm(config) {
   this.getFormData = form => {
     let data = '';
     for (let item of form.elements) {
-      if (item.attributes.name != undefined && item.attributes.name.value.trim() != '') {
-        data += item.attributes.name.value + '=' + encodeURIComponent(item.value) + '&'
+      if (item.attributes.name != undefined && item.attributes.name.value.trim() != '' && item.value != '') {
+        if((item.type == FormTypes.CHECKBOX || item.type == FormTypes.RADIO) && item.checked == false) {
+          continue;
+        }
+        data += item.attributes.name.value + '=' + encodeURIComponent(item.value) + '&';
       }
     }
     if(this.paginationEnabled) {
@@ -312,7 +315,8 @@ function AjaxForm(config) {
   }
 
   this.getRenderConfig = () => {
-    let range = this.parsePaginationRange(this.conf.pagination.pattern);
+    let symbol = this.conf.pagination.pattern.match(/[0-9]{1,2}/);
+    let range = symbol != null && symbol.length ? parseInt(symbol[0]) : null;
 
     if(range == null) {
       element = null;
@@ -438,11 +442,6 @@ function AjaxForm(config) {
     });
   }
 
-  this.parsePaginationRange = pattern => {
-    let symbol = pattern.match(/[0-9]{1,2}/);
-    return symbol != null && symbol.length ? parseInt(symbol[0]) : null;
-  }
-
   this.renderLoadMore = () => {
     this.conf.pagination.container.innerHTML = '';
     if(this.activePage >= this.pageCount) {
@@ -491,6 +490,53 @@ function AjaxForm(config) {
     }
   }
 
+  this.setValuesFromQueryString = () => {
+    
+    let searchParams = new URLSearchParams(window.location.search);
+    for(var pair of searchParams.entries()) {
+
+      console.log(pair[0]+ ', '+ pair[1]);
+      switch(pair[0]) {
+        case this.conf.paginationModel['pageNumber']:
+          this.activePage = pair[1];
+          break;
+
+        case this.conf.paginationModel['pageSize']:
+          this.setPageSize(pair[1]);
+          break;
+
+        case this.conf.paginationModel['pageCount']:
+          this.setPageCount(pair[1]);
+          break;
+
+        default:
+          try {
+            let element = document.querySelector(`[name=${pair[0]}]`)//.value = pair[1];
+            switch(element.type) {
+              case FormTypes.CHECKBOX:
+              case FormTypes.RADIO:
+                element.checked = element.value == pair[1] ? true : false;
+                break;
+
+              case FormTypes.BUTTON:
+                break;
+
+              default:
+                element.value = pair[1];
+                break;
+            }
+          } catch (e) {
+            return false;
+          }
+          break;
+      }
+
+      if(this.paginationEnabled && this.conf.pagination.type == paginationTypes.PAGE) {
+        this.renderPagination();
+      }
+    }
+  }
+
   // CONSTRUCTOR
   // --------------------------------------------------
   (() => {
@@ -502,6 +548,8 @@ function AjaxForm(config) {
     this.setContainer();
     this.setQueryParamsSettings();
     this.initPagination();
+
+    this.setValuesFromQueryString();
 
     this.xhttp.onreadystatechange = this.readystatechange;
     this.xhttp.onloadstart = this.loadstart;

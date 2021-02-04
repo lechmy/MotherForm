@@ -16,14 +16,35 @@
         data-mf-init data-mf-container=".mf-response-container" data-mf-query-params="true"
         data-mf-pgn="{'type': 'pagination', 'pattern': '< [5] >', 'container': '.mf-pagination', 'pageSize': 10, 'totalCount': 88}"
         data-mf-pgn-model="{'response': 'data', 'pageSize': 'pagesize','pageNumber': 'pagenumber', 'totalCount': 'totalCount'}"> -->
-    <form action="https://jsonplaceholder.typicode.com/comments?postId" class="mf-init">
+    <form action="https://jsonplaceholder.typicode.com/comments?postId" class="mf-init" style="text-align: center;">
       <div>
         <label for="postId">Post ID</label>
         <input id="postId" type="text" name="postId">
       </div>
+      <br>
+      <input type="radio" name="color" value="red">
+      <input type="radio" name="color" value="green">
+      <input type="radio" name="color" value="blue">
+      <br>
+      <br>
       <div>
-        <button name="sort" value="up">A-Z</button>
+          <button for="sort" value="up">A-Z</button>
+          <button for="sort" value="down">Z-A</button>
       </div>
+      <br>
+      <select name="select" value="1" id="">
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+      </select>
+      <!-- <textarea name="message" rows="10" cols="30">
+        The cat was playing in the garden.
+      </textarea> -->
+      <br>
+      <input type="checkbox" name="apply" value="yes">
+      <br>
+      <input type="hidden" name="lang" value="en">
       <br>
       <button type="submit">Submit</button>
     </form>
