@@ -134,24 +134,25 @@ function AjaxForm(config) {
 
   this.setTotalCount = count => {
     let dataTotalCount = this.parseDataAtt('data-mf-pgn');
-    dataTotalCount = dataTotalCount != null ? parseInt(dataTotalCount['totalCount']) : null;
-    this.conf.pagination.totalCount = count || dataTotalCount || this.conf.pagination.totalCount;
+    dataTotalCount = dataTotalCount != null ? parseInt(dataTotalCount['totalCount']) : {};
+    let totalCount = parseInt(count || dataTotalCount['totalCount']);
+    this.conf.pagination.totalCount = totalCount || this.conf.pagination.totalCount;
     // this.setPageCount();
   }
 
   this.setPageSize = size => {
     let dataPageSize = this.parseDataAtt('data-mf-pgn');
-    dataPageSize = dataPageSize != null ? parseInt(dataPageSize['pageSize']) : null;
-    this.conf.pagination.pageSize = size || dataPageSize || this.conf.pagination.pageSize;
+    dataPageSize = dataPageSize != null ? parseInt(dataPageSize['pageSize']) : {};
+    let pageCount = parseInt(size || dataPageSize['pageSize']);
+    this.conf.pagination.pageSize = pageCount || this.conf.pagination.pageSize;
   }
 
   this.setPageCount = count => {
     let dataCount = this.parseDataAtt('data-mf-pgn');
-    let val = count || dataCount['pageCount'];
-    let pageCount = parseInt(val);
-    let calculatedPageCount = Math.floor(this.conf.pagination.totalCount / this.conf.pagination.pageSize) || 1;
+    dataCount = dataCount != null ? dataCount['pageCount'] : {};
+    let pageCount = parseInt(count || dataCount['pageCount']);
+    this.pageCount = pageCount || Math.floor(this.conf.pagination.totalCount / this.conf.pagination.pageSize) || this.conf.pagination.pageCount  || 1;
     this.activePage = this.activePage > pageCount ? pageCount : this.activePage;
-    this.pageCount = pageCount || calculatedPageCount || this.conf.pagination.pageCount;
   }
 
   this.setPaginationParameters = () => {
@@ -350,7 +351,7 @@ function AjaxForm(config) {
 
     let pagStop = (pagStart + range) - 1;
 
-    if(this.pageCount - pagStop < 2) {
+    if(this.pageCount - pagStop < 1) {
       pagStart = (this.pageCount - range) + 1;
       pagStop = this.pageCount;
     }
@@ -536,11 +537,12 @@ new AjaxForm({
   pagination: {
     // type: 'load-more',
     type: 'pagination',
-    pattern: '<< < ~ >... [5] ...< ~ > >>',
+    pattern: '<< < ~ >... [4] ...< ~ > >>',
     // pattern: '< (x/y) >',
     container: '.mf-pagination',
     // pageSize: 10,
     // totalCount: 90
+    pageCount: 9
   },
   paginationModel: { //pagination mapping
     totalCount: 'Ukupno'
